@@ -21,7 +21,7 @@ jobs:
           echo "${{ secrets.ENV_FILE }}" >> .env
 
       - name: 🏭 Build project
-        run: yarn build
+        run: CI=false yarn build
 
       - name: 🔍 Find dist directory
         run: ls
