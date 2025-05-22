@@ -95,7 +95,7 @@ export function SocketProvider({ children }: ISocketProvider) {
 
     socket.on("connect", async () => {
       // console.log("SOCKET ON", socket.id)
-      setSocketId(socket.id)
+      setSocketId(socket.id || "")
       // setTimeout(() => setLastConnectionDate(lastConnectionDate + 1), 500)
       if (reconnectInterval) {
         clearInterval(reconnectInterval)
