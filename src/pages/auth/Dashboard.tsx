@@ -13,7 +13,7 @@ import { UserContext } from "../../hooks/contexts/UserContext";
 import { useForm } from "react-hook-form";
 import { api } from "../../service/api";
 import { toast } from "react-toastify";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { RiAuctionLine, RiLockPasswordLine, RiSendPlaneFill, RiTimerFlashFill, RiMoneyDollarCircleFill } from 'react-icons/ri';
 import { GiTakeMyMoney } from 'react-icons/gi';
 import { AiFillCrown } from 'react-icons/ai';
@@ -39,7 +39,7 @@ const schemaPin= Yup.object().shape({
 
 export function Dashboard() {
   const { loading, toggleLoading, user, balance, getBalance } = useContext(UserContext)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const [modalCoupon, setModalCoupon] = useState(false)
   const [modalChangePassword, setModalChangePassword] = useState(false)

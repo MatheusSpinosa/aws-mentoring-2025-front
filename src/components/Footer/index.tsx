@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useContext, useEffect, useState } from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import logo from "../../assets/img/logo.svg";
 import { UserContext } from "../../hooks/contexts/UserContext";
@@ -27,7 +27,7 @@ const schemaLogin = Yup.object().shape({
 
 export function Footer() {
   const { user, loading, toggleLoading, handleUserLogin, handleUserLogout } = useContext(UserContext)
-  const history = useHistory()
+  const navigate = useNavigate();
 
 	const [modalRegister, setModalRegister] = useState(false)
 	const [modalLogin, setModalLogin] = useState(false)
@@ -134,7 +134,7 @@ export function Footer() {
                 <NavLink to="/dashboard" className="link" >{user?.user?.userName}</NavLink>
                 <a className="link" onClick={() => handleUserLogout()}>Sair</a>
               </div>
-              <div className="fl" onClick={() => history.push("/dashboard")}>{userInitials.toUpperCase()}</div>
+              <div className="fl" onClick={() => navigate("/dashboard")}>{userInitials.toUpperCase()}</div>
             </div>
           }
           </div>

@@ -3,7 +3,7 @@
 /* eslint-disable max-len */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useContext, useEffect, useState } from 'react';
-import { NavLink, useHistory, useLocation } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 
 import logo from '../../assets/img/logo.svg'
 import { Modal } from '../Modal';
@@ -35,7 +35,7 @@ const schemaActiveAccount = Yup.object().shape({
 
 export function Header() {
 	const { user, loading, toggleLoading, handleUserLogin, handleUserLogout, balance, getBalance } = useContext(UserContext)
-	const history = useHistory()
+	const navigate = useNavigate();
 
 	const [sidebarOpen, setSidebarOpen] = useState('');
 	const [modalRegister, setModalRegister] = useState(false)
@@ -252,7 +252,7 @@ export function Header() {
   return(
 		<>
 			<header className={sidebarOpen}>
-				<img onClick={() => history.push("/")} src={logo} className="logo" title="Logo" />
+				<img onClick={() => navigate("/")} src={logo} className="logo" title="Logo" />
 				<nav className="menu">
 					<NavLink to="/" className="link">Leilões Online</NavLink>
 					<div onClick={() => setModalActiveAccount(true)} className="link">Ativar Conta</div>
@@ -279,7 +279,7 @@ export function Header() {
 							<NavLink className="link" to="/dashboard">{user?.user?.userName}</NavLink>
 							<a className="link" onClick={() => handleUserLogout()}>Sair</a>
 						</div>
-						<div className="fl" onClick={() => history.push("/dashboard")}>{userInitials.toUpperCase()}</div>
+						<div className="fl" onClick={() => navigate("/dashboard")}>{userInitials.toUpperCase()}</div>
 					</div>
 				}
 
