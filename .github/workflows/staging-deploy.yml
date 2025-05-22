@@ -1,0 +1,39 @@
+name: CD-STAGING
+on: 
+  push:
+    branches: 
+      - main
+
+jobs:
+  deploy-staging:
+    name: Deploy app to AWS Staging Machine
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: 🏗 Set up repository
+        uses: actions/checkout@v3
+      
+      - name: 📦 Install dependencies
+        run: yarn
+      
+      - name: 📝 Configure .env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" >> .env
+
+      - name: 🏭 Build project
+        run: yarn build
+
+      - name: 🔍 Find dist directory
+        run: ls
+
+      - name: ☁️ AWS Staging Deployment S3
+        uses: jakejarvis/s3-sync-action@v0.5.1
+        with:
+          args: --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SOURCE_DIR: build # Sub
+      
