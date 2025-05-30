@@ -362,6 +362,7 @@ export function Header() {
 						type="file"
 						required
 						label="Imagem do leilão"
+						accept=".png,.jpg,.jpeg,image/png,image/jpeg"
 						onChange={async (e) => {
 							const file = e?.target?.files?.[0];
 							if (file) {

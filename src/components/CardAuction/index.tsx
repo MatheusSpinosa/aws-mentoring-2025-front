@@ -4,7 +4,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable max-len */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { SocketContext } from "../../hooks/contexts/SocketContext";
 import { UserContext } from "../../hooks/contexts/UserContext";
@@ -18,7 +18,7 @@ export function CardAuction({auction}: IProps) {
   const { SendNewBet, user } = useContext(UserContext);
   const [ timer, setTimer ] = useState(auction?.timer || 15);
   const [ac, setAc] = useState<any>({})
-  const [img, setUImg] = useState('')
+  const img = useMemo(() => (`https://dcbjuiwcrd5ve.cloudfront.net/${auction?.image}`), [ac?.image]);
 
   useEffect(() => {
     const newAuction = ac;
@@ -67,7 +67,6 @@ export function CardAuction({auction}: IProps) {
     setTimer(auction?.timer)
 
     setAc(auction)
-    setUImg(auction?.image)
 
     socket.emit("subscribe", auction?.id);
     const auctionListener = socket.on(`_${auction?.id}_`, (message, time) => {
@@ -89,7 +88,7 @@ export function CardAuction({auction}: IProps) {
         }
       >
       <div className="img-c">
-        <img src={img} />
+        <img src={img} style={{width: '100%'}} />
       </div>
       <div>
         <h3 className="id">LEILÃO #{ac?.id}</h3>
