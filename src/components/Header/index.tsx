@@ -66,13 +66,14 @@ export function Header() {
     reValidateMode: 'onBlur',
 	});
 
-	const { register: registerAuction, reset: resetAuction } = useForm<any>({
+	const { register: registerAuction, reset: resetAuction, handleSubmit: auctionHandleSubmit } = useForm<any>({
     mode: 'onSubmit',
     reValidateMode: 'onBlur',
 	});
 
 	async function handleRegisterUser() {
 		toggleLoading(true)
+		console.log(getValues())
 		const validateForm = await schemaRegister.validate(getValues()).catch(function(e) {
 			toast(`${e}`.split(':')[1], {
 				style: { backgroundColor: "var(--red-1)", color: "#fff" },
@@ -168,7 +169,7 @@ export function Header() {
 			try {
 				await api.post("/customer/confirm", data)
 				resetActive()
-				setModalLogin(false)
+				setModalActiveAccount(false)
 			} catch (err: any) {
 				toast(`${err?.response?.data?.message}`, {
 					style: { backgroundColor: "var(--red-1)", color: "#fff" },
@@ -352,11 +353,7 @@ export function Header() {
 			>
 				 <form
 					accept-charset="utf-8"
-					onSubmit={async (e) => {
-						e.preventDefault();
-						const values = getValues();
-						handleCreateAuction(values)
-					}}
+					onSubmit={auctionHandleSubmit(handleCreateAuction)}
 				>
 					<Input
 						type="file"
@@ -374,8 +371,8 @@ export function Header() {
 							}
 						}}
 					/>
-					<Input type="text" required label="Nome" register={register('name')} />
-					<Input type="datetime-local" required label="Data de início" register={register('startDate')} />
+					<Input type="text" required label="Nome" register={registerAuction('name')} />
+					<Input type="datetime-local" required label="Data de início" register={registerAuction('startDate')} />
 					{/* <Input type="number" required label="Valor do cronometro em segundos" min={15} max={900} register={register('counter')} /> */}
 					<input disabled={loading} type="submit" className="bt-green first" value={"CRIAR"} />
 				</form>
