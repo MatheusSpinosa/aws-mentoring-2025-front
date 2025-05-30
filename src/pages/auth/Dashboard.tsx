@@ -54,7 +54,7 @@ export function Dashboard() {
   async function handleRedemptionCoupon() {
     toggleLoading(true)
     try {
-      await api.post("/coupons/use", {code: coupon});
+      await api.post("/coupon/use", {code: coupon});
 			toast(`Cupom resgatado com sucesso`, {
         style: { backgroundColor: "#00A300", color: "#fff", position: "absolute" },
         progressStyle: { background: "darkgreen" },
