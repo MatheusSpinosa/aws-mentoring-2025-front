@@ -12,18 +12,21 @@ import { UserContext } from "../../hooks/contexts/UserContext";
 interface IProps {
   auction: any;
 }
-
+let counterTimeout: NodeJS.Timeout | undefined = undefined;
 export function CardAuction({auction}: IProps) {
   const { socket, lastConnectionDate } = useContext(SocketContext);
   const { SendNewBet, user } = useContext(UserContext);
-  const [ timer, setTimer ] = useState(auction?.timer || 15);
+  const [ timer, setTimer ] = useState(auction?.counter || 15);
   const [ac, setAc] = useState<any>({})
+  const [lastBet, setLastBet] = useState(ac?.last_bet_createdAt)
+  
   const img = useMemo(() => (`https://dcbjuiwcrd5ve.cloudfront.net/${auction?.image}`), [ac?.image]);
-
-  useEffect(() => {
+  
+  const handleUpdateCounter = () => {
+    if (counterTimeout) {
+      clearInterval(counterTimeout);
+    }
     const newAuction = ac;
-    let counterTimeout: NodeJS.Timeout | undefined = undefined;
-
     if (
       !newAuction?.endDate && 
       !newAuction?.winner
@@ -33,7 +36,7 @@ export function CardAuction({auction}: IProps) {
       const betIsBefore = dayjs(new Date(newAuction?.last_bet_createdAt)).isBefore(new Date(newAuction?.startDate));
       if (newAuction?.last_bet_createdAt && !isBefore) {
         counterTimeout = setInterval(async () => {
-          let seconds = Number(auction?.timer || 15);
+          let seconds = Number(auction?.counter || 15);
           if (betIsBefore) {
             const d = new Date();
             const ad = new Date(newAuction?.startDate);
@@ -53,24 +56,29 @@ export function CardAuction({auction}: IProps) {
           setTimer(seconds)
         }, 1000)
       }
-      
     }
+    return counterTimeout;
+  }
+
+  useEffect(() => {
+    handleUpdateCounter()
 
     return () => {
       if (counterTimeout) {
         clearInterval(counterTimeout);
       }
     }
-  }, [ac])
+  }, [lastBet])
 
   useEffect(() => {
-    setTimer(auction?.timer)
+    setTimer(auction?.counter)
 
     setAc(auction)
 
     socket.emit("subscribe", auction?.id);
     const auctionListener = socket.on(`_${auction?.id}_`, (message, time) => {
       setAc(message)
+      setLastBet(message?.last_bet_createdAt)
     })
 
     return () => {
@@ -78,12 +86,13 @@ export function CardAuction({auction}: IProps) {
     }
   }, [lastConnectionDate])
 
+
   return(
     <div 
       className={
         `prod 
           ${(ac?.winner || ac?.status == "e") ? 'ended': ''}
-          ${(timer > 0 && timer < Number(Number(auction?.timer || 0) / 3)) ? 'low': ''}
+          ${(timer > 0 && timer < Number(Number(auction?.counter || 0) / 3)) ? 'low': ''}
         `
         }
       >
